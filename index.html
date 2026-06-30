@@ -105,6 +105,7 @@
           </svg>
           <span id="btn-text">Mulai Sesi</span>
         </button>
+        <button id="end-session-btn" class="btn-end-session" style="display:none">Akhiri Sesi</button>
       </div>
 
       <!-- Note Input (visible only during session) -->
@@ -399,6 +400,18 @@
         </div>
         <div class="progress-bar-track">
           <div id="modal-goal-fill" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Mood check-in -->
+      <div class="modal-mood-section">
+        <div class="modal-mood-label">Bagaimana perasaanmu?</div>
+        <div class="modal-mood-picker" id="modal-mood-picker">
+          <button class="mood-btn" data-mood="🔥">🔥</button>
+          <button class="mood-btn" data-mood="😌">😌</button>
+          <button class="mood-btn" data-mood="😴">😴</button>
+          <button class="mood-btn" data-mood="🧘">🧘</button>
+          <button class="mood-btn" data-mood="🎯">🎯</button>
         </div>
       </div>
 

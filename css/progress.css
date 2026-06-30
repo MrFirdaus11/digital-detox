@@ -172,6 +172,11 @@
   gap: var(--space-3);
 }
 
+.history-mood {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
 .history-dot {
   width: 10px;
   height: 10px;

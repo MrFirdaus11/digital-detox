@@ -1,6 +1,7 @@
 const Timer = (() => {
   let displayEl, labelEl, ringProgress, ringBg, dotsEl;
   let startBtnEl, btnIconEl, btnTextEl;
+  let endSessionBtnEl;
   let goalFillEl, goalTextEl, goalMessageEl, goalCardEl;
   let noteSection, noteInput;
 
@@ -10,31 +11,44 @@ const Timer = (() => {
   let isCountdown = false;
   let countdownTotal = 0;
 
+  // Pause state
+  let paused = false;
+  let pauseStartTime = null;
+  let totalPausedMs = 0;
+
   const CIRCUMFERENCE = 678.58;
   const DAILY_MAX_SECONDS = 8 * 60 * 60;
 
   function init() {
-    displayEl    = document.getElementById('timer-display');
-    labelEl      = document.getElementById('timer-label');
-    ringProgress = document.getElementById('timer-ring-progress');
-    ringBg       = document.getElementById('timer-ring-bg');
-    dotsEl       = document.getElementById('timer-dots');
-    startBtnEl   = document.getElementById('session-btn');
-    btnIconEl    = document.getElementById('btn-icon');
-    btnTextEl    = document.getElementById('btn-text');
-    goalFillEl   = document.getElementById('goal-fill');
-    goalTextEl   = document.getElementById('goal-text');
-    goalMessageEl= document.getElementById('goal-message');
-    goalCardEl   = document.getElementById('daily-goal-card');
-    noteSection  = document.getElementById('note-section');
-    noteInput    = document.getElementById('session-note');
+    displayEl      = document.getElementById('timer-display');
+    labelEl        = document.getElementById('timer-label');
+    ringProgress   = document.getElementById('timer-ring-progress');
+    ringBg         = document.getElementById('timer-ring-bg');
+    dotsEl         = document.getElementById('timer-dots');
+    startBtnEl     = document.getElementById('session-btn');
+    btnIconEl      = document.getElementById('btn-icon');
+    btnTextEl      = document.getElementById('btn-text');
+    endSessionBtnEl= document.getElementById('end-session-btn');
+    goalFillEl     = document.getElementById('goal-fill');
+    goalTextEl     = document.getElementById('goal-text');
+    goalMessageEl  = document.getElementById('goal-message');
+    goalCardEl     = document.getElementById('daily-goal-card');
+    noteSection    = document.getElementById('note-section');
+    noteInput      = document.getElementById('session-note');
 
     startBtnEl.addEventListener('click', toggleSession);
+    endSessionBtnEl.addEventListener('click', endSession);
     updateGoalDisplay();
   }
 
   function toggleSession() {
-    sessionActive ? endSession() : startSession();
+    if (!sessionActive) {
+      startSession();
+    } else if (paused) {
+      resumeSession();
+    } else {
+      pauseSession();
+    }
   }
 
   function startSession() {
@@ -43,16 +57,21 @@ const Timer = (() => {
     countdownTotal = isCountdown ? settings.countdownMinutes * 60 : 0;
 
     sessionActive = true;
+    paused = false;
+    pauseStartTime = null;
+    totalPausedMs = 0;
     sessionStartTime = new Date();
 
     displayEl.classList.add('active');
+    displayEl.classList.remove('paused');
     ringProgress.classList.add('active');
     ringBg.classList.add('pulsing');
     dotsEl.classList.add('visible');
 
     startBtnEl.classList.add('session-active');
-    btnTextEl.textContent = 'Akhiri Sesi';
-    setBtnIcon('stop');
+    btnTextEl.textContent = 'Jeda Sesi';
+    setBtnIcon('pause');
+    endSessionBtnEl.style.display = 'none';
 
     if (isCountdown) {
       labelEl.textContent = 'Sisa Waktu';
@@ -70,11 +89,53 @@ const Timer = (() => {
     showToast('Sesi dimulai — selamat hadir!');
   }
 
+  function pauseSession() {
+    paused = true;
+    pauseStartTime = new Date();
+    clearInterval(intervalId);
+    intervalId = null;
+
+    displayEl.classList.add('paused');
+    labelEl.textContent = 'Di Jeda';
+    dotsEl.classList.remove('visible');
+    ringBg.classList.remove('pulsing');
+
+    btnTextEl.textContent = 'Lanjutkan';
+    setBtnIcon('play');
+    endSessionBtnEl.style.display = 'block';
+  }
+
+  function resumeSession() {
+    paused = false;
+    if (pauseStartTime) {
+      totalPausedMs += new Date() - pauseStartTime;
+    }
+    pauseStartTime = null;
+
+    displayEl.classList.remove('paused');
+    labelEl.textContent = isCountdown ? 'Sisa Waktu' : 'Waktu Kehadiran';
+    dotsEl.classList.add('visible');
+    ringBg.classList.add('pulsing');
+
+    btnTextEl.textContent = 'Jeda Sesi';
+    setBtnIcon('pause');
+    endSessionBtnEl.style.display = 'none';
+
+    intervalId = setInterval(tick, 1000);
+    tick();
+  }
+
+  function getElapsedMs() {
+    if (!sessionStartTime) return 0;
+    return new Date() - sessionStartTime - totalPausedMs;
+  }
+
   function getElapsedSeconds() {
-    return Math.floor((new Date() - sessionStartTime) / 1000);
+    return Math.floor(getElapsedMs() / 1000);
   }
 
   function tick() {
+    if (paused) return;
     if (isCountdown) {
       const remaining = Math.max(countdownTotal - getElapsedSeconds(), 0);
       updateTimerDisplay(remaining);
@@ -100,7 +161,10 @@ const Timer = (() => {
     const note = noteInput.value.trim();
 
     sessionActive = false;
-    displayEl.classList.remove('active');
+    paused = false;
+    pauseStartTime = null;
+    totalPausedMs = 0;
+    displayEl.classList.remove('active', 'paused');
     ringProgress.classList.remove('active');
     ringBg.classList.remove('pulsing');
     dotsEl.classList.remove('visible');
@@ -108,6 +172,7 @@ const Timer = (() => {
     startBtnEl.classList.remove('session-active');
     btnTextEl.textContent = 'Mulai Sesi';
     setBtnIcon('leaf');
+    endSessionBtnEl.style.display = 'none';
 
     updateTimerDisplay(0);
     updateRingProgress(0);
@@ -122,6 +187,7 @@ const Timer = (() => {
         durationMinutes: durationMinutes,
         durationSeconds: durationSeconds,
         note:            note || '',
+        mood:            '',
       };
       addSession(sessionData);
       updateGoalDisplay();
@@ -137,6 +203,7 @@ const Timer = (() => {
         durationSeconds,
         startTime: sessionStartTime,
         note,
+        sessionIndex: getSessions().length - 1,
       });
     } else {
       showToast('Sesi terlalu singkat — minimal 1 menit.');
@@ -159,7 +226,6 @@ const Timer = (() => {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.6);
 
-      // second chime
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.connect(gain2);
@@ -193,9 +259,7 @@ const Timer = (() => {
     const progress   = Math.min(todayMin / targetMin, 1);
 
     goalFillEl.style.width = `${progress * 100}%`;
-    const todayStr  = formatDurationShort(todayMin);
-    const targetStr = formatDurationShort(targetMin);
-    goalTextEl.textContent = `${todayStr} / ${targetStr}`;
+    goalTextEl.textContent = `${formatDurationShort(todayMin)} / ${formatDurationShort(targetMin)}`;
     goalMessageEl.textContent = getGoalMessage(progress);
   }
 
@@ -218,9 +282,13 @@ const Timer = (() => {
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function setBtnIcon(type) {
-    btnIconEl.innerHTML = type === 'leaf'
-      ? '<path d="M12 2C12 2 4 6 4 13a8 8 0 0016 0C20 6 12 2 12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 22V12M12 12C10 10 7 9 4 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
-      : '<rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>';
+    const icons = {
+      leaf: '<path d="M12 2C12 2 4 6 4 13a8 8 0 0016 0C20 6 12 2 12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 22V12M12 12C10 10 7 9 4 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      stop: '<rect x="6" y="6" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/>',
+      pause: '<rect x="6" y="5" width="3.5" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14.5" y="5" width="3.5" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>',
+      play: '<polygon points="6,4 20,12 6,20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+    };
+    btnIconEl.innerHTML = icons[type] || icons.leaf;
   }
 
   function showToast(message) {

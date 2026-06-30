@@ -128,8 +128,32 @@
 /* ---- Session Button ---- */
 .session-btn-wrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  gap: var(--space-3);
+}
+
+.btn-end-session {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--duration-fast);
+  background: none;
+  border: none;
+  padding: var(--space-1);
+}
+
+.btn-end-session:hover {
+  color: #c0392b;
+}
+
+/* Timer paused state */
+.timer-display.paused {
+  opacity: 0.4;
+  animation: pulse-ring 2s ease-in-out infinite;
 }
 
 /* ---- Note Section ---- */

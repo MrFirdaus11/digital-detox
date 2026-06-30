@@ -202,6 +202,7 @@ const Progress = (() => {
       const time = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const dur  = formatMin(s.durationMinutes);
       const noteHtml = s.note ? `<div class="history-note">📝 ${escHtml(s.note)}</div>` : '';
+      const moodHtml = s.mood ? `<span class="history-mood">${s.mood}</span>` : '';
       return `
         <div class="history-item" style="animation-delay: ${i * 40}ms">
           <div class="history-item-left">
@@ -212,7 +213,10 @@ const Progress = (() => {
               ${noteHtml}
             </div>
           </div>
-          <div class="history-duration">${dur}</div>
+          <div style="display:flex;align-items:center;gap:var(--space-3)">
+            ${moodHtml}
+            <div class="history-duration">${dur}</div>
+          </div>
         </div>`;
     }).join('');
   }
