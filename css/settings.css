@@ -1,0 +1,306 @@
+/* ============================================
+   DIGITAL DETOX — Settings Screen
+   ============================================ */
+
+#page-settings {
+  padding-top: 0;
+}
+
+.settings-content {
+  padding: var(--space-2) var(--space-6) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- Page Heading ---- */
+.settings-heading {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ---- Settings Group ---- */
+.settings-group {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-group-label {
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-row {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  transition: background var(--duration-fast);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-row:hover {
+  background: rgba(26, 51, 40, 0.03);
+}
+
+.settings-row-full {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.settings-row-info {
+  flex: 1;
+}
+
+.settings-row-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.settings-row-desc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---- Target Display ---- */
+.target-display {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--green-dark);
+  letter-spacing: -0.03em;
+  text-align: center;
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+/* ---- Range Slider ---- */
+.range-wrapper {
+  width: 100%;
+  padding: var(--space-1) 0;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--track-bg);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green-deepest);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(26, 51, 40, 0.35);
+  transition: transform var(--duration-fast) var(--ease-bounce),
+              box-shadow var(--duration-fast);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 16px rgba(26, 51, 40, 0.45);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green-deepest);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 10px rgba(26, 51, 40, 0.35);
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* ---- Toggle Switch ---- */
+.toggle-switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: var(--track-bg);
+  transition: background var(--duration-base) var(--ease-smooth);
+  cursor: pointer;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: transform var(--duration-base) var(--ease-bounce);
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--green-dark);
+}
+
+.toggle-switch input:checked + .toggle-track::after {
+  transform: translateX(20px);
+}
+
+/* ---- Danger Button ---- */
+.btn-danger {
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: center;
+  transition: all var(--duration-fast);
+}
+
+.btn-danger:hover {
+  background: rgba(192, 57, 43, 0.15);
+}
+
+/* ---- Export Button ---- */
+.btn-outline {
+  width: 100%;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--green-dark);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: center;
+  border: 1.5px solid var(--green-pale);
+  transition: all var(--duration-fast);
+}
+
+.btn-outline:hover {
+  background: rgba(45, 90, 61, 0.06);
+  border-color: var(--green-mid);
+}
+
+/* ---- Mode Picker ---- */
+.mode-picker {
+  display: flex;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mode-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all var(--duration-fast) var(--ease-smooth);
+  cursor: pointer;
+}
+
+.mode-btn.active {
+  background: var(--green-deepest);
+  color: var(--text-on-dark);
+  box-shadow: 0 2px 8px rgba(26, 51, 40, 0.25);
+}
+
+/* ---- Countdown Presets ---- */
+.countdown-presets {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.preset-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  transition: all var(--duration-fast) var(--ease-smooth);
+  cursor: pointer;
+}
+
+.preset-btn.active {
+  background: var(--green-deepest);
+  color: var(--text-on-dark);
+  box-shadow: 0 2px 8px rgba(26, 51, 40, 0.25);
+}
+
+/* ---- About Section ---- */
+.about-section {
+  text-align: center;
+  padding: var(--space-4) var(--space-6);
+}
+
+.about-app-name {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.about-version {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.about-tagline {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+  font-style: italic;
+}

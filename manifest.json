@@ -1,0 +1,36 @@
+{
+  "name": "DigitalDetox — Hadir di Dunia Nyata",
+  "short_name": "DigitalDetox",
+  "description": "Timer fokus untuk membantu Anda hadir di dunia nyata dan melepaskan diri dari layar.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0ece4",
+  "theme_color": "#f0ece4",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "lifestyle", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Mulai Sesi",
+      "short_name": "Mulai",
+      "description": "Langsung mulai sesi kehadiran",
+      "url": "/",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

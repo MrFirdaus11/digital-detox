@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f0ece4" />
+  <meta name="description" content="Digital Detox — Aplikasi timer fokus untuk membantu Anda hadir di dunia nyata dan melepaskan diri dari layar." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="DigitalDetox" />
+
+  <title>DigitalDetox — Hadir di Dunia Nyata</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Apple touch icon -->
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/progress.css" />
+  <link rel="stylesheet" href="/css/settings.css" />
+  <link rel="stylesheet" href="/css/modal.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-logo-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <span class="header-title">DigitalDetox</span>
+    </div>
+    <button class="header-icon-btn" id="header-bell" aria-label="Notifikasi">
+      <!-- Tree / leaf icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 3L4 10h3v8h10v-8h3L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M9 22v-4h6v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ==================== PAGES ==================== -->
+
+  <!-- ---- DASHBOARD ---- -->
+  <main id="page-dashboard" class="page" role="main">
+    <div class="dashboard-content">
+
+      <!-- Timer Ring -->
+      <section class="timer-section" aria-label="Timer Kehadiran">
+        <div class="timer-container" role="img" aria-label="Timer lingkaran">
+          <svg class="timer-svg" viewBox="0 0 260 260" aria-hidden="true">
+            <defs>
+              <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%"   stop-color="#2d5a3d" />
+                <stop offset="100%" stop-color="#1a3328" />
+              </linearGradient>
+            </defs>
+            <!-- Background ring -->
+            <circle
+              id="timer-ring-bg"
+              class="timer-ring-bg"
+              cx="130" cy="130" r="108"
+            />
+            <!-- Progress ring -->
+            <circle
+              id="timer-ring-progress"
+              class="timer-ring-progress"
+              cx="130" cy="130" r="108"
+              stroke="url(#ring-gradient)"
+            />
+          </svg>
+
+          <!-- Center content -->
+          <div class="timer-center">
+            <div id="timer-display" class="timer-display" aria-live="polite" aria-label="Waktu yang telah berlalu">
+              00:00:00
+            </div>
+            <div id="timer-label" class="timer-label">Waktu Kehadiran</div>
+            <div id="timer-dots" class="timer-dots" aria-hidden="true">
+              <div class="timer-dot"></div>
+              <div class="timer-dot"></div>
+              <div class="timer-dot"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Session Button -->
+      <div class="session-btn-wrapper">
+        <button id="session-btn" class="btn-primary" aria-label="Mulai Sesi">
+          <svg id="btn-icon" class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 2C12 2 4 6 4 13a8 8 0 0016 0C20 6 12 2 12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M12 22V12M12 12C10 10 7 9 4 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span id="btn-text">Mulai Sesi</span>
+        </button>
+      </div>
+
+      <!-- Note Input (visible only during session) -->
+      <div id="note-section" class="note-section" style="display:none">
+        <input type="text" id="session-note" class="note-input" placeholder="Catatan sesi: apa yang kamu lakukan?" maxlength="120" />
+      </div>
+
+      <!-- Daily Goal Card -->
+      <div id="daily-goal-card" class="card daily-goal-card" role="region" aria-label="Target Harian">
+        <div class="daily-goal-header">
+          <div class="daily-goal-label">
+            <!-- Target icon -->
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="12" r="1" fill="currentColor"/>
+            </svg>
+            Target Harian
+          </div>
+          <span id="goal-text" class="daily-goal-progress-text">0 / 4 jam</span>
+        </div>
+
+        <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progress target harian">
+          <div id="goal-fill" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+
+        <p id="goal-message" class="daily-goal-message">Mulai hari ini dengan satu sesi! 🌱</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ---- PROGRESS ---- -->
+  <section id="page-progress" class="page" role="region" aria-label="Progress">
+    <div class="progress-content">
+
+      <div>
+        <h1 class="progress-heading">Progress</h1>
+        <p class="progress-subheading">Lihat perjalanan kehadiran Anda</p>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row" role="list" aria-label="Statistik">
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon" aria-hidden="true">🔥</div>
+          <div id="stat-streak" class="stat-value">0 hari</div>
+          <div class="stat-label">Streak</div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon" aria-hidden="true">⏱️</div>
+          <div id="stat-today" class="stat-value">0 mnt</div>
+          <div class="stat-label">Hari Ini</div>
+        </div>
+        <div class="stat-card" role="listitem">
+          <div class="stat-icon" aria-hidden="true">📊</div>
+          <div id="stat-avg" class="stat-value">0 mnt</div>
+          <div class="stat-label">Rata-rata</div>
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <div class="chart-section">
+        <div class="chart-header">
+          <h2 class="chart-title">Durasi per Hari</h2>
+          <div class="chart-toggle" role="group" aria-label="Pilih periode chart">
+            <button id="toggle-weekly"  class="chart-toggle-btn active" aria-pressed="true">Mingguan</button>
+            <button id="toggle-monthly" class="chart-toggle-btn" aria-pressed="false">Bulanan</button>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="progress-chart" aria-label="Grafik durasi kehadiran"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart Export -->
+      <button id="export-chart-btn" class="btn-outline">📷 Simpan Grafik sebagai PNG</button>
+
+      <!-- History -->
+      <div class="history-section">
+        <h2 class="history-title">Riwayat Sesi</h2>
+        <div id="history-list" class="history-list" role="list" aria-label="Riwayat sesi"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ---- SETTINGS ---- -->
+  <section id="page-settings" class="page" role="region" aria-label="Pengaturan">
+    <div class="settings-content">
+
+      <h1 class="settings-heading">Pengaturan</h1>
+
+      <!-- Target -->
+      <div class="settings-group" role="group" aria-labelledby="target-group-label">
+        <div id="target-group-label" class="settings-group-label">Target Harian</div>
+
+        <div class="settings-row settings-row-full">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Jam Kehadiran per Hari</div>
+            <div class="settings-row-desc">Tetapkan target waktu tanpa ponsel setiap harinya</div>
+          </div>
+          <div id="target-display" class="target-display">4 jam / hari</div>
+          <div class="range-wrapper">
+            <input
+              type="range"
+              id="target-slider"
+              min="30" max="480" step="15"
+              value="240"
+              aria-label="Target durasi harian"
+              aria-valuemin="30" aria-valuemax="480"
+            />
+            <div class="range-labels">
+              <span>30 mnt</span>
+              <span>8 jam</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode Sesi -->
+      <div class="settings-group" role="group" aria-labelledby="mode-group-label">
+        <div id="mode-group-label" class="settings-group-label">Mode Sesi</div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Mode Timer</div>
+            <div class="settings-row-desc">Count-up (tak terbatas) atau Countdown (fokus 25 mnt)</div>
+          </div>
+          <div class="mode-picker">
+            <button id="mode-countup" class="mode-btn active" data-mode="countup">⏱ Up</button>
+            <button id="mode-countdown" class="mode-btn" data-mode="countdown">⏳ Down</button>
+          </div>
+        </div>
+
+        <div class="settings-row" id="countdown-preset-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Durasi Countdown</div>
+            <div class="settings-row-desc">Pilih durasi fokus</div>
+          </div>
+          <div class="countdown-presets">
+            <button class="preset-btn active" data-minutes="15">15</button>
+            <button class="preset-btn" data-minutes="25">25</button>
+            <button class="preset-btn" data-minutes="45">45</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="settings-group" role="group" aria-labelledby="notif-group-label">
+        <div id="notif-group-label" class="settings-group-label">Notifikasi</div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Pengingat Harian</div>
+            <div class="settings-row-desc">Ingatkan untuk memulai sesi setiap hari</div>
+          </div>
+          <label class="toggle-switch" aria-label="Aktifkan pengingat harian">
+            <input type="checkbox" id="reminder-toggle" />
+            <div class="toggle-track"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tampilan -->
+      <div class="settings-group" role="group" aria-labelledby="appearance-group-label">
+        <div id="appearance-group-label" class="settings-group-label">Tampilan</div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Mode Gelap</div>
+            <div class="settings-row-desc">Beralih ke tema gelap</div>
+          </div>
+          <label class="toggle-switch" aria-label="Aktifkan mode gelap">
+            <input type="checkbox" id="darkmode-toggle" />
+            <div class="toggle-track"></div>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row-info">
+            <div class="settings-row-title">Suara Notifikasi</div>
+            <div class="settings-row-desc">Mainkan suara saat sesi selesai</div>
+          </div>
+          <label class="toggle-switch" aria-label="Aktifkan suara notifikasi">
+            <input type="checkbox" id="sound-toggle" />
+            <div class="toggle-track"></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Data -->
+      <div class="settings-group" role="group" aria-labelledby="data-group-label">
+        <div id="data-group-label" class="settings-group-label">Data</div>
+
+        <div class="settings-row">
+          <button id="export-data-btn" class="btn-outline" aria-label="Ekspor data sesi sebagai JSON">
+            📤 Ekspor Data (JSON)
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <button id="import-data-btn" class="btn-outline" aria-label="Impor data sesi dari JSON">
+            📥 Impor Data (JSON)
+          </button>
+          <input type="file" id="import-file-input" accept=".json" style="display:none" />
+        </div>
+
+        <div class="settings-row">
+          <button id="reset-data-btn" class="btn-danger" aria-label="Hapus semua data">
+            🗑️ Reset Semua Data
+          </button>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="about-section">
+        <div class="about-app-name">DigitalDetox</div>
+        <div class="about-version">Versi 1.0.0</div>
+        <div class="about-tagline">"Hadir sepenuhnya di dunia nyata."</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== BOTTOM NAV ==================== -->
+  <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama">
+    <button class="nav-item active" data-page="dashboard" id="nav-dashboard" aria-label="Beranda" aria-current="page">
+      <!-- Clock icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Beranda</span>
+    </button>
+
+    <button class="nav-item" data-page="progress" id="nav-progress" aria-label="Progress">
+      <!-- Bar chart icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="3"  y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="10" y="7"  width="4" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="17" y="3"  width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      <span>Progress</span>
+    </button>
+
+    <button class="nav-item" data-page="settings" id="nav-settings" aria-label="Pengaturan">
+      <!-- Gear icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      <span>Pengaturan</span>
+    </button>
+  </nav>
+
+  <!-- ==================== SESSION COMPLETION MODAL ==================== -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="particles" aria-hidden="true">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+
+      <!-- Success icon -->
+      <div class="modal-success-icon" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline class="modal-checkmark" points="4,12 9,17 20,6"/>
+        </svg>
+      </div>
+
+      <h2 id="modal-title" class="modal-title">Sesi Selesai! 🌿</h2>
+
+      <div id="modal-badge" class="modal-badge" style="display:none"></div>
+
+      <div id="modal-duration" class="modal-duration">0 menit</div>
+      <p id="modal-subtitle" class="modal-subtitle">Anda telah hadir sepenuhnya.</p>
+
+      <!-- Note recap -->
+      <div id="modal-note-recap" class="modal-note-recap" style="display:none"></div>
+
+      <!-- Goal progress in modal -->
+      <div class="modal-goal-bar">
+        <div class="modal-goal-header">
+          <span id="modal-goal-label" class="modal-goal-label">Target Harian</span>
+          <span id="modal-goal-value" class="modal-goal-value">0 / 4 jam</span>
+        </div>
+        <div class="progress-bar-track">
+          <div id="modal-goal-fill" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <button id="modal-close-btn" class="modal-btn">Lanjutkan</button>
+    </div>
+  </div>
+
+  <!-- ==================== PWA INSTALL BANNER ==================== -->
+  <div id="install-banner" class="install-banner" role="complementary" aria-label="Instal aplikasi">
+    <div class="install-banner-content">
+      <div class="install-banner-icon" aria-hidden="true">🌿</div>
+      <div class="install-banner-text">
+        <strong>Instal DigitalDetox</strong>
+        <span>Tambahkan ke layar utama</span>
+      </div>
+    </div>
+    <div class="install-banner-actions">
+      <button id="install-btn" class="install-btn-primary">Instal</button>
+      <button id="install-dismiss" class="install-btn-dismiss" aria-label="Tutup">✕</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+</div>
+
+<!-- Scripts (load order matters — storage first) -->
+<script src="/js/storage.js"></script>
+<script src="/js/modal.js"></script>
+<script src="/js/timer.js"></script>
+<script src="/js/progress.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+/* ============================================
+   DIGITAL DETOX — Design Tokens
+   ============================================ */
+
+:root {
+  /* ---- Color Palette ---- */
+  --bg-primary:       #f0ece4;      /* warm cream background */
+  --bg-secondary:     #e8e3da;      /* slightly deeper cream */
+  --bg-card:          #ffffff;      /* pure white cards */
+  --bg-card-soft:     rgba(255, 255, 255, 0.80);
+
+  --green-deepest:    #1a3328;      /* darkest green — headings, nav active */
+  --green-dark:       #1e3d2f;      /* primary green — buttons, accents */
+  --green-mid:        #2d5a3d;      /* medium green — progress fill */
+  --green-light:      #4a7c5f;      /* light green — icons, secondary */
+  --green-muted:      #7aab8a;      /* muted green — dividers, subtle elements */
+  --green-pale:       #c8ddd1;      /* pale green — borders */
+
+  --text-primary:     #1a3328;      /* main text */
+  --text-secondary:   #4a6357;      /* secondary text */
+  --text-muted:       #8fa898;      /* muted / label text */
+  --text-on-dark:     #f0ece4;      /* text on dark green backgrounds */
+
+  --track-bg:         #ddd9d0;      /* progress bar background */
+  --ring-bg:          #ddd9d0;      /* timer ring background */
+  --ring-stroke:      #d0cbc2;      /* timer outer ring stroke */
+
+  --border-color:     rgba(26, 51, 40, 0.12);
+  --shadow-sm:        0 2px 8px rgba(26, 51, 40, 0.08);
+  --shadow-md:        0 4px 20px rgba(26, 51, 40, 0.12);
+  --shadow-lg:        0 8px 40px rgba(26, 51, 40, 0.18);
+
+  /* ---- Typography ---- */
+  --font-body:        'Inter', sans-serif;
+  --font-heading:     'Outfit', sans-serif;
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-md:    1.125rem;   /* 18px */
+  --text-lg:    1.25rem;    /* 20px */
+  --text-xl:    1.5rem;     /* 24px */
+  --text-2xl:   2rem;       /* 32px */
+  --text-3xl:   2.5rem;     /* 40px */
+  --text-4xl:   3.5rem;     /* 56px */
+
+  /* ---- Spacing ---- */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+
+  /* ---- Border Radius ---- */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* ---- Nav ---- */
+  --nav-height:  72px;
+  --nav-bg:      #ffffff;
+
+  /* ---- Notes ---- */
+  --note-bg:     rgba(45, 90, 61, 0.06);
+  --note-color:  var(--text-secondary);
+  --badge-bg:    rgba(45, 90, 61, 0.10);
+
+  /* ---- Transitions ---- */
+  --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-base: 280ms;
+  --duration-slow: 500ms;
+
+  /* ---- Timer SVG ---- */
+  --timer-size:       260px;
+  --timer-radius:     108px;
+  --timer-circumference: 678.58px; /* 2 * PI * 108 */
+  --timer-stroke-width: 10px;
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+[data-theme="dark"] {
+  --bg-primary:       #121c16;
+  --bg-secondary:     #1a2a22;
+  --bg-card:          #1e2f26;
+  --bg-card-soft:     rgba(30, 47, 38, 0.80);
+
+  --green-deepest:    #d4e3d9;
+  --green-dark:       #8fa898;
+  --green-mid:        #4a7c5f;
+  --green-light:      #2d5a3d;
+  --green-muted:      #3d5f4a;
+  --green-pale:       #2a4233;
+
+  --text-primary:     #dce8e0;
+  --text-secondary:   #a8bfb0;
+  --text-muted:       #5f7a6a;
+  --text-on-dark:     #121c16;
+
+  --track-bg:         #2a4233;
+  --ring-bg:          #2a4233;
+  --ring-stroke:      #2a4233;
+
+  --border-color:     rgba(212, 227, 217, 0.08);
+  --shadow-sm:        0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md:        0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-lg:        0 8px 40px rgba(0, 0, 0, 0.45);
+
+  --nav-bg:           #1a2a22;
+
+  --note-bg:          rgba(138, 168, 152, 0.08);
+  --note-color:       #a8bfb0;
+  --badge-bg:         rgba(138, 168, 152, 0.12);
+}
